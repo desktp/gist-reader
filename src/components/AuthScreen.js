@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
-  StyleSheet,
   Text,
   View,
   Button
 } from 'react-native';
 import OAuthManager from 'react-native-oauth';
 
+import { login } from '../actions';
 
-export default class AuthScreen extends Component {
+class AuthScreen extends Component {
   componentWillMount() {
     const config = {
       github: {
@@ -20,17 +21,12 @@ export default class AuthScreen extends Component {
     this.manager = new OAuthManager('gistreader')
 
     this.manager.configure(config);
-    // console.log(this.manager);
   }
 
   login() {
-    console.log('login');
     this.manager.authorize('github', {scopes: 'user:email gist'})
-      .then((res) => {
-        console.log('success');
-        console.log(res);
-      })
-      .catch(err => console.log(err));
+      .then(res => this.props.login(res))
+      .catch(err => this.props.login(err));
   }
 
   render() {
@@ -40,22 +36,18 @@ export default class AuthScreen extends Component {
           Auth Screen!
         </Text>
         <Text style={styles.welcome}>
-          
+          { this.props.error }
         </Text>
         <Button
           title='Login with Github'
           onPress={() => this.login()}
-        />
-        <Button 
-          title='To Reader >'
-          onPress={() => this.props.navigation.navigate('Reader')}
         />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -72,4 +64,11 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-});
+};
+
+const mapStateToProps = ({ app }) => {
+  const { error } = app;
+  return { error };
+}
+
+export default connect(null, { login })(AuthScreen);

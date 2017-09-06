@@ -1,6 +1,27 @@
 import { NavigationActions } from 'react-navigation';
 
-import { QR_READ_SUCCESS, QR_NOT_GIST, INVALID_CODE } from './types';
+import { 
+	AUTH_SUCCESS,
+	AUTH_FAILED,
+	QR_READ_SUCCESS, 
+	QR_NOT_GIST, 
+	INVALID_CODE 
+} from './types';
+
+export const login = (authResponse) => (
+	(dispatch) => {
+		if (authResponse.authorized && authResponse.status === 'ok') {
+			dispatch(NavigationActions.navigate({ routeName: 'Reader' }));
+
+			return dispatch({
+				type: AUTH_SUCCESS,
+				payload: authResponse.response.credentials
+			});
+		}
+
+		return dispatch({ type: AUTH_FAILED });
+	}
+);
 
 export const readQR = ({ type, data }) => (
 	(dispatch) => {
