@@ -12,7 +12,6 @@ export default class AuthScreen extends Component {
   componentWillMount() {
     const config = {
       github: {
-        callback_url: `http://localhost/github`,
         client_id: 'd38f51462899fbf69edb',
         client_secret: 'e1959389be6dba164092011d28353db1afc4c8b7'
       }
