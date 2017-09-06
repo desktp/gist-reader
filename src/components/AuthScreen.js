@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
   Text,
   View,
-  Button
+  Button,
+  ActivityIndicator
 } from 'react-native';
 import OAuthManager from 'react-native-oauth';
 
@@ -24,7 +25,7 @@ class AuthScreen extends Component {
   }
 
   login() {
-    this.manager.authorize('github', {scopes: 'user:email gist'})
+    this.manager.authorize('github', {scopes: 'user gist'})
       .then(res => this.props.login(res))
       .catch(err => this.props.login(err));
   }
@@ -38,6 +39,9 @@ class AuthScreen extends Component {
         <Text style={styles.welcome}>
           { this.props.error }
         </Text>
+        <ActivityIndicator
+          animating={this.props.loading}
+        />
         <Button
           title='Login with Github'
           onPress={() => this.login()}
@@ -67,8 +71,8 @@ const styles = {
 };
 
 const mapStateToProps = ({ app }) => {
-  const { error } = app;
-  return { error };
+  const { error, loading } = app;
+  return { error, loading };
 }
 
 export default connect(null, { login })(AuthScreen);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, Image } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
@@ -14,19 +14,22 @@ class ReaderScreen extends Component {
         <QRCodeScanner
           onRead={(e) => this.props.readQR(e)}
           topContent={
-            <Text style={styles.welcome}>
-              Reader Screen!
-            </Text>
+            <View>
+              <Image 
+                source={{ uri: this.props.user.avatar_url }} 
+                style={styles.thumbnail}
+              />
+              <Text style={styles.welcome}>
+                { this.props.user && `Logged in as ${this.props.user.login}` }
+              </Text>
+            </View>
           }
           bottomContent={
             <View>
+              <Text>{ this.props.error }</Text>
               <Button 
                 title='< To Auth'
                 onPress={() => this.props.navigation.navigate('Auth')}
-              />
-              <Button 
-                title='To Gist >'
-                onPress={() => this.props.navigation.navigate('Gist')}
               />
             </View>
           }
@@ -48,16 +51,18 @@ const styles = {
     textAlign: 'center',
     margin: 10,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  thumbnail: {
+    width: 50,
+    height: 50,
+    borderRadius: 100
+  }
 };
 
 const mapStateToProps = ({ app }) => {
-  const { gist } = app;
-  return { gist };
+  console.log(app);
+  const { user, error } = app;
+
+  return { user, error };
 }
 
 export default connect(mapStateToProps, { readQR })(ReaderScreen);

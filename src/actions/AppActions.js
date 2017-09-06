@@ -1,8 +1,11 @@
 import { NavigationActions } from 'react-navigation';
 
 import { 
+	LOGGING_IN,
 	AUTH_SUCCESS,
 	AUTH_FAILED,
+	GET_USER_INFO_SUCCESS,
+	GET_USER_INFO_FAIL,
 	QR_READ_SUCCESS, 
 	QR_NOT_GIST, 
 	INVALID_CODE 
@@ -10,8 +13,10 @@ import {
 
 export const login = (authResponse) => (
 	(dispatch) => {
+		dispatch({ type: LOGGING_IN });
+
 		if (authResponse.authorized && authResponse.status === 'ok') {
-			dispatch(NavigationActions.navigate({ routeName: 'Reader' }));
+			dispatch(getUserInfo(authResponse.response.credentials));
 
 			return dispatch({
 				type: AUTH_SUCCESS,
@@ -20,6 +25,34 @@ export const login = (authResponse) => (
 		}
 
 		return dispatch({ type: AUTH_FAILED });
+	}
+);
+
+const getUserInfo = (credentials) => (
+	(dispatch) => {
+		const config = {
+			headers: {
+				'Authorization': credentials.authorizationHeader,
+			}
+		};
+
+		fetch('https://api.github.com/user', config)
+			.then(res => {
+				if (res.ok) {
+					res.json().then(data => {
+						dispatch({
+							type: GET_USER_INFO_SUCCESS,
+							payload: data
+						});	
+						
+						dispatch(NavigationActions.navigate({ routeName: 'Reader' }));	
+					});
+				} else {
+					dispatch({
+						type: GET_USER_INFO_FAIL
+					})
+				}
+			});
 	}
 );
 
