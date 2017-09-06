@@ -8,7 +8,9 @@ import {
 	GET_USER_INFO_FAIL,
 	QR_READ_SUCCESS, 
 	QR_NOT_GIST, 
-	INVALID_CODE 
+	INVALID_CODE,
+	FETCHING_GIST,
+	FETCH_GIST_SUCCESS
 } from './types';
 
 export const login = (authResponse) => (
@@ -56,8 +58,10 @@ const getUserInfo = (credentials) => (
 	}
 );
 
-export const readQR = ({ type, data }) => (
+export const readQR = (event, credentials) => (
 	(dispatch) => {
+		const { type, data } = event;
+		
 		if (type != 'QR_CODE') {
 			dispatch({ type: INVALID_CODE });
 			return;
@@ -73,10 +77,35 @@ export const readQR = ({ type, data }) => (
 		
 		dispatch(NavigationActions.navigate({ routeName: 'Gist' }));
 
+		dispatch(getGistDetails(gistId, credentials));
+
 		return dispatch({
-			type: QR_READ_SUCCESS,
-			payload: gistId
+			type: QR_READ_SUCCESS
 		});	
 	}
 	
+);
+
+const getGistDetails = (gistId, credentials) => (
+	(dispatch) => {
+		dispatch({ type: FETCHING_GIST });
+		
+		const config = {
+			headers: {
+				'Authorization': credentials.authorizationHeader,
+			}
+		};
+
+		fetch(`https://api.github.com/gists/${gistId}`, config)
+			.then(res => {
+				if (res.ok) {
+					res.json().then(data => {
+						dispatch({
+							type: FETCH_GIST_SUCCESS,
+							payload: data
+						});
+					})
+				}
+			}) 
+	}
 );

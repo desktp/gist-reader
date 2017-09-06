@@ -9,3 +9,6 @@ export const GET_USER_INFO_SUCCESS = 'get_user_info_success';
 export const GET_USER_INFO_FAIL = 'get_user_info_fail';
 
 export const LOGGING_IN = 'logging_in';
+
+export const FETCHING_GIST = 'fetching_gist';
+export const FETCH_GIST_SUCCESS = 'fetch_gist_success';

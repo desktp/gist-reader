@@ -6,7 +6,9 @@ import {
 	GET_USER_INFO_FAIL,
 	QR_READ_SUCCESS, 
 	QR_NOT_GIST, 
-	INVALID_CODE 
+	INVALID_CODE,
+	FETCHING_GIST,
+	FETCH_GIST_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -18,8 +20,6 @@ const INITIAL_STATE = {
 }
 
 export default (state = INITIAL_STATE, action) => {
-	// console.log(action.type);
-	// console.log(action.payload);
 	switch (action.type) {
 		case LOGGING_IN:
 			return { ...state, loading: true };
@@ -32,11 +32,15 @@ export default (state = INITIAL_STATE, action) => {
 		case GET_USER_INFO_FAIL:
 			return { ...state, error: 'Get user info failed, try again.', loading: false  };
 		case QR_READ_SUCCESS:
-			return { ...state, gist: action.payload, error: '' };
+			return { ...state, error: '' };
 		case QR_NOT_GIST:
 			return { ...state, error: 'Scanned QRCode is not a Gist URL.'};
 		case INVALID_CODE:
 			return { ...state, error: 'Scanned code is not a QR Code.'};
+		case FETCHING_GIST:
+			return { ...state, loading: true };
+		case FETCH_GIST_SUCCESS:
+			return { ...state, error: '', gist: action.payload, loading: false };
 		default: 
 			return state;
 	}

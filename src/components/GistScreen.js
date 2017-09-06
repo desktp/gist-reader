@@ -15,7 +15,7 @@ class GistScreen extends Component {
           Gist Screen!
         </Text>
         <Text style={styles.welcome}>
-          Gist ID: { this.props.gist }
+          Gist: { JSON.stringify(this.props.gist) }
         </Text>
         <Button 
           title='< To Reader'

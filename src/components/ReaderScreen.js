@@ -8,11 +8,10 @@ import { readQR } from '../actions/AppActions';
 
 class ReaderScreen extends Component {
   render() {
-    console.log(this.props);
     return (
       <View style={styles.container}>
         <QRCodeScanner
-          onRead={(e) => this.props.readQR(e)}
+          onRead={(e) => this.props.readQR(e, this.props.credentials)}
           topContent={
             <View>
               <Image 
@@ -59,10 +58,9 @@ const styles = {
 };
 
 const mapStateToProps = ({ app }) => {
-  console.log(app);
-  const { user, error } = app;
+  const { user, error, credentials } = app;
 
-  return { user, error };
+  return { user, error, credentials };
 }
 
 export default connect(mapStateToProps, { readQR })(ReaderScreen);
