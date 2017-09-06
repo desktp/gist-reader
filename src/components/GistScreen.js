@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -6,12 +7,15 @@ import {
   Button
 } from 'react-native';
 
-export default class GistScreen extends Component {
+class GistScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
           Gist Screen!
+        </Text>
+        <Text style={styles.welcome}>
+          Gist ID: { this.props.gist }
         </Text>
         <Button 
           title='< To Reader'
@@ -40,3 +44,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const mapStateToProps = ({ app }) => {
+  const { gist } = app;
+  return { gist };
+};
+
+export default connect(mapStateToProps, null)(GistScreen);
