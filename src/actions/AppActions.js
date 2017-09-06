@@ -1,3 +1,4 @@
+import { ToastAndroid } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import { 
@@ -10,7 +11,11 @@ import {
 	QR_NOT_GIST, 
 	INVALID_CODE,
 	FETCHING_GIST,
-	FETCH_GIST_SUCCESS
+	FETCH_GIST_SUCCESS,
+	INPUT_CHANGED,
+	SUBMITTING_COMMENT,
+	SUBMIT_COMMENT_SUCCESS,
+	SUBMIT_COMMENT_FAIL
 } from './types';
 
 export const login = (authResponse) => (
@@ -61,7 +66,7 @@ const getUserInfo = (credentials) => (
 export const readQR = (event, credentials) => (
 	(dispatch) => {
 		const { type, data } = event;
-		
+
 		if (type != 'QR_CODE') {
 			dispatch({ type: INVALID_CODE });
 			return;
@@ -82,8 +87,7 @@ export const readQR = (event, credentials) => (
 		return dispatch({
 			type: QR_READ_SUCCESS
 		});	
-	}
-	
+	}	
 );
 
 const getGistDetails = (gistId, credentials) => (
@@ -109,3 +113,43 @@ const getGistDetails = (gistId, credentials) => (
 			}) 
 	}
 );
+
+export const inputChanged = (text) => {
+	return ({
+		type: INPUT_CHANGED,
+		payload: text
+	})
+};
+
+export const submitComment = (comment, credentials, gistId, url) => (
+	(dispatch) => {
+		dispatch({ type: SUBMITTING_COMMENT });
+		
+		const body = { body: comment }
+
+		const config = {
+			method: 'POST',
+			headers: {
+				'Authorization': credentials.authorizationHeader,
+				'Content-Type': 'application/vnd.github.v3.text+json'
+			},
+			body: JSON.stringify(body)
+		};
+
+		fetch(url, config)
+			.then(res => {
+				console.log(res);
+				if (res.ok) {
+					dispatch(getGistDetails(gistId, credentials));
+
+					dispatch({ type: SUBMIT_COMMENT_SUCCESS });
+				} else {
+					ToastAndroid.show('An error ocurred, please try again.', ToastAndroid.SHORT);
+
+					dispatch({ type: SUBMIT_COMMENT_FAIL });
+				}
+			})
+			.catch(err => console.log(err));
+	}
+);
+

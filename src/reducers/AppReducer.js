@@ -8,20 +8,29 @@ import {
 	QR_NOT_GIST, 
 	INVALID_CODE,
 	FETCHING_GIST,
-	FETCH_GIST_SUCCESS
+	FETCH_GIST_SUCCESS,
+	INPUT_CHANGED,
+	SUBMITTING_COMMENT,
+	SUBMIT_COMMENT_SUCCESS,
+	SUBMIT_COMMENT_FAIL
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	gist: '',
 	credentials: '',
 	user: '',
+	comment: '',
 	loading: false,
 	error: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
+	console.log(action.type);
+	console.log(action.payload);
 	switch (action.type) {
 		case LOGGING_IN:
+		case FETCHING_GIST:
+		case SUBMITTING_COMMENT:
 			return { ...state, loading: true };
 		case AUTH_SUCCESS:
 			return { ...state, credentials: action.payload, error: '', loading: false };
@@ -37,10 +46,14 @@ export default (state = INITIAL_STATE, action) => {
 			return { ...state, error: 'Scanned QRCode is not a Gist URL.'};
 		case INVALID_CODE:
 			return { ...state, error: 'Scanned code is not a QR Code.'};
-		case FETCHING_GIST:
-			return { ...state, loading: true };
+		case SUBMIT_COMMENT_SUCCESS:
+			return { ...state, loading: false, comment: '' };
+		case SUBMIT_COMMENT_FAIL:
+			return { ...state, loading: false };
 		case FETCH_GIST_SUCCESS:
 			return { ...state, error: '', gist: action.payload, loading: false };
+		case INPUT_CHANGED:
+			return { ...state, comment: action.payload };
 		default: 
 			return state;
 	}

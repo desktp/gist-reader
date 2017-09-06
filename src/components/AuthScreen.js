@@ -25,7 +25,7 @@ class AuthScreen extends Component {
   }
 
   login() {
-    this.manager.authorize('github', {scopes: 'user gist'})
+    this.manager.authorize('github', {scopes: 'gist'})
       .then(res => this.props.login(res))
       .catch(err => this.props.login(err));
   }
