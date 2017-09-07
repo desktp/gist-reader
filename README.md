@@ -1,5 +1,4 @@
-## Test DevGrid
-### Gist QR Reader
+## Gist QR Reader
 #### Features
 * Login with OAuth
 * QR Code reader
