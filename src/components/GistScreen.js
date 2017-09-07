@@ -15,7 +15,7 @@ import {
   Body,
   Item,
   Input,
-  ListItem
+  ListItem,
 } from 'native-base';
 
 import { inputChanged, submitComment } from '../actions';
@@ -31,19 +31,21 @@ class GistScreen extends Component {
 
   renderFiles(files) {
     return Object.keys(files).map(file => (
-      <CardItem key={file}>
-        <Body>
-          <ListItem>
+      <View key={file}>
+        <CardItem style={styles.gistFile}>
+          <Left>
             <Icon name='ios-document-outline' />
             <Text style={styles.gistFileName}>
               { file }
             </Text>
-          </ListItem>
-          <ListItem>
+          </Left>
+        </CardItem>
+        <CardItem>
+          <Body style={{ flexGrow: 1 }}>
             <Text style={styles.gistContent}>{ files[file].content }</Text>
-          </ListItem>
-        </Body>
-      </CardItem>
+          </Body>
+        </CardItem>
+      </View>
     ));
   }
 
@@ -66,14 +68,6 @@ class GistScreen extends Component {
               </Left>
             </CardItem>
             { this.renderFiles(this.props.gist.files) }
-            <CardItem>
-              <Left>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                  <Icon name="logo-github" />
-                  <Text>{ this.props.gist.comments } comments</Text>
-                </Button>
-              </Left>
-            </CardItem>
           </Card>
           <Card>
             <CardItem>
@@ -91,7 +85,8 @@ class GistScreen extends Component {
               { !this.props.loading &&
                 <Button 
                   success 
-                  style={styles.button}
+                  block
+                  // style={styles.button}
                   onPress={() => this.submitComment()}
                 >
                   <Text>Comment</Text>
@@ -107,14 +102,16 @@ class GistScreen extends Component {
 
 const styles = {
   gistFileName: {
-    color: '#87838B'
+    color: 'dodgerblue',
+    fontWeight: 'bold'
   },
   gistContent: {
-    fontFamily: 'Consolas',
-    fontSize: 14
+    fontFamily: 'monospace',
+    fontSize: 14,
+    color: 'grey'
   },
-  button: {
-    alignSelf: 'flex-end'
+  gistFile: {
+    flexGrow: 1, 
   }
 };
 

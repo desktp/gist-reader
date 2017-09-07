@@ -21,19 +21,20 @@ const INITIAL_STATE = {
 	user: '',
 	comment: '',
 	loading: false,
-	error: ''
+	error: '',
+	isScanActive: true,
 }
 
 export default (state = INITIAL_STATE, action) => {
 	console.log(action.type);
 	console.log(action.payload);
 	switch (action.type) {
-		case LOGGING_IN:
 		case FETCHING_GIST:
 		case SUBMITTING_COMMENT:
+		case LOGGING_IN:
 			return { ...state, loading: true };
 		case AUTH_SUCCESS:
-			return { ...state, credentials: action.payload, error: '', loading: false };
+			return { ...state, credentials: action.payload, error: '' };
 		case AUTH_FAILED:
 			return { ...state, error: 'Authentication failed, try again.', loading: false  };
 		case GET_USER_INFO_SUCCESS:
@@ -41,11 +42,11 @@ export default (state = INITIAL_STATE, action) => {
 		case GET_USER_INFO_FAIL:
 			return { ...state, error: 'Get user info failed, try again.', loading: false  };
 		case QR_READ_SUCCESS:
-			return { ...state, error: '' };
+			return { ...state, error: '', isScanActive: false };
 		case QR_NOT_GIST:
-			return { ...state, error: 'Scanned QRCode is not a Gist URL.'};
+			return { ...state, error: 'Scanned QRCode is not a Gist URL.', isScanActive: true };
 		case INVALID_CODE:
-			return { ...state, error: 'Scanned code is not a QR Code.'};
+			return { ...state, error: 'Scanned code is not a QR Code.', isScanActive: true };
 		case SUBMIT_COMMENT_SUCCESS:
 			return { ...state, loading: false, comment: '' };
 		case SUBMIT_COMMENT_FAIL:

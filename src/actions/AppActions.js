@@ -18,6 +18,10 @@ import {
 	SUBMIT_COMMENT_FAIL
 } from './types';
 
+export const loggingIn = () => (
+	(dispatch) => dispatch({ type: LOGGING_IN })
+);
+
 export const login = (authResponse) => (
 	(dispatch) => {
 		dispatch({ type: LOGGING_IN });

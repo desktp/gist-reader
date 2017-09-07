@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Image, ActivityIndicator, UIManager, LayoutAnimation } from 'react-native';
 import {
   Text,
-  View,
+  Container,
+  Content,
   Button,
-  ActivityIndicator
-} from 'react-native';
+  Icon
+} from 'native-base';
 import OAuthManager from 'react-native-oauth';
 
-import { login } from '../actions';
+import { login, loggingIn } from '../actions';
+
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+
+const gistreader = require('../assets/images/gistreader.png');
 
 class AuthScreen extends Component {
   componentWillMount() {
@@ -24,29 +30,52 @@ class AuthScreen extends Component {
     this.manager.configure(config);
   }
 
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut();
+  }
+
   login() {
     this.manager.authorize('github', {scopes: 'gist'})
-      .then(res => this.props.login(res))
+      .then(res => {
+        this.props.loggingIn();
+        this.props.login(res);
+      })
       .catch(err => this.props.login(err));
   }
 
-  render() {
+  renderButton() {
+    if (this.props.loading) {
+      return (
+        <ActivityIndicator animating={this.props.loading} />
+      );
+    }
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Auth Screen!
-        </Text>
-        <Text style={styles.welcome}>
-          { this.props.error }
-        </Text>
-        <ActivityIndicator
-          animating={this.props.loading}
-        />
-        <Button
-          title='Login with Github'
-          onPress={() => this.login()}
-        />
-      </View>
+      <Button
+        block
+        onPress={() => this.login()}
+        iconLeft
+        dark
+      >
+        <Icon name='logo-github' />
+        <Text>Login with GitHub</Text>
+      </Button>
+    );
+  }
+
+  render() {
+    console.log(`loading: ${this.props.loading}`);
+
+    return (
+      <Container style={styles.container}>
+        <Content>
+          <Image source={gistreader} style={styles.logo} />
+          { this.renderButton() }
+          <Text style={styles.welcome}>
+            { this.props.error }
+          </Text>
+        </Content>
+      </Container>
     );
   }
 }
@@ -68,6 +97,13 @@ const styles = {
     color: '#333333',
     marginBottom: 5,
   },
+  logo: {
+    flexGrow: 1,
+    alignItems: 'center',
+    height: 150,
+    resizeMode: 'contain',
+    paddingTop: 300
+  }
 };
 
 const mapStateToProps = ({ app }) => {
@@ -75,4 +111,4 @@ const mapStateToProps = ({ app }) => {
   return { error, loading };
 }
 
-export default connect(null, { login })(AuthScreen);
+export default connect(null, { login, loggingIn })(AuthScreen);
