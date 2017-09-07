@@ -20,6 +20,8 @@ import {
   Title
 } from 'native-base';
 
+import moment from 'moment';
+
 import { inputChanged, submitComment } from '../actions';
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -69,7 +71,9 @@ class GistScreen extends Component {
             <Thumbnail source={{ uri: comment.user.avatar_url }} style={styles.commentAvatar}/>
             <Body>
               <Text>{comment.user.login}</Text>
-              <Text note>{comment.created_at}</Text>
+              <Text note>
+                {moment(comment.created_at).fromNow()}
+              </Text>
             </Body>
           </Left>
         </CardItem>
@@ -133,6 +137,7 @@ class GistScreen extends Component {
             </CardItem>
           </Card>
           
+
           { this.renderComments(this.props.gistComments) }
 
         </Content>

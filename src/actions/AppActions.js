@@ -115,6 +115,9 @@ const getGistDetails = (gistId, credentials) => (
 				if (gistRes.ok && commentsRes.ok) {
 					Promise.all([gistRes.json(), commentsRes.json()])
 						.then(data => {
+							// Reverse the array to show most recent comments first
+							data[1] = data[1].reverse();
+							
 							dispatch({
 								type: FETCH_GIST_SUCCESS,
 								payload: data
