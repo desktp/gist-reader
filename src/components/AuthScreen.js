@@ -17,6 +17,15 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 const gistreader = require('../assets/images/gistreader.png');
 
 class AuthScreen extends Component {
+    // static navigationOptions = {
+  //   header: {
+  //     visible: false,
+  //   }
+  // }
+  static navigationOptions = ({ navigation }) => ({
+    header: null
+  });
+
   componentWillMount() {
     const config = {
       github: {

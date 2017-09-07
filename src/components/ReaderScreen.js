@@ -11,6 +11,10 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 
 
 class ReaderScreen extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    header: null
+  });
+
   componentWillUpdate() {
     LayoutAnimation.easeInEaseOut();
   }
@@ -23,7 +27,7 @@ class ReaderScreen extends Component {
           cameraStyle={styles.container}
           showMarker
           fadeIn
-          reactivate={this.props.isScanActive}
+          reactivate
         />
         <View style={styles.loginInfo}>
           <Image 

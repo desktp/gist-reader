@@ -8,7 +8,7 @@ import routes from './navigation/config/routes';
 import getStore from './store';
 
 const RootNavigator = StackNavigator(routes, {
-	headerMode: 'none'
+	headerMode: 'screen'
 });
 
 // Set Navigation Reducer

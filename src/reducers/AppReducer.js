@@ -52,7 +52,7 @@ export default (state = INITIAL_STATE, action) => {
 		case SUBMIT_COMMENT_FAIL:
 			return { ...state, loading: false };
 		case FETCH_GIST_SUCCESS:
-			return { ...state, error: '', gist: action.payload, loading: false };
+			return { ...state, error: '', gist: action.payload[0], gistComments: action.payload[1], loading: false };
 		case INPUT_CHANGED:
 			return { ...state, comment: action.payload };
 		default: 

@@ -103,18 +103,25 @@ const getGistDetails = (gistId, credentials) => (
 				'Authorization': credentials.authorizationHeader,
 			}
 		};
+ 
+		const gistPromise = fetch(`https://api.github.com/gists/${gistId}`, config);
+		const commentsPromise = fetch(`https://api.github.com/gists/${gistId}/comments`, config)
 
-		fetch(`https://api.github.com/gists/${gistId}`, config)
+		Promise.all([gistPromise, commentsPromise])
 			.then(res => {
-				if (res.ok) {
-					res.json().then(data => {
-						dispatch({
-							type: FETCH_GIST_SUCCESS,
-							payload: data
-						});
-					})
+				const gistRes = res[0];
+				const commentsRes = res[1];
+
+				if (gistRes.ok && commentsRes.ok) {
+					Promise.all([gistRes.json(), commentsRes.json()])
+						.then(data => {
+							dispatch({
+								type: FETCH_GIST_SUCCESS,
+								payload: data
+							});	
+						})
 				}
-			}) 
+			});
 	}
 );
 
